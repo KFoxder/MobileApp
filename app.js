@@ -5,12 +5,15 @@
 
 var express = require('express');
 var routes = require('./routes');
-var user = require('./routes/user');
+
+//Homepage
+var home = require('./routes/home');
+
 var http = require('http');
 var path = require('path');
 
 var mongo = require('mongodb');
-var monk = require('monk');
+var mongoose = require('mongoose');
 
 var app = express();
 
@@ -32,8 +35,33 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+//Connect to DB
+mongoose.connect('mongodb://localhost/test');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function callback () {
+	  console.log("Connected to MongoDB!");
+	});
+
+//Define Schemas for Party
+
+//Define Enums for Locations
+var LOCATIONS = 'Manhattan Brooklyn Queens Bronx Staten'.split(' ');
+
+var PartySchema =  new mongoose.Schema({
+    name: {type: String, trim: true},
+    location: {type: String, trim: true, enum: LOCATIONS},
+    score : {type: Number}
+});
+
+var Party = mongoose.model('Party', PartySchema);
+
+//Page routes
 app.get('/', routes.index);
-app.get('/users', user.list);
+app.get('/home', home.home(Party));
+
+
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
