@@ -259,6 +259,10 @@ app.get('/fail', function(req,res){
 res.send("Failed!")
 
 });
+app.get('/logout', function(req,res){
+	req.logout();
+  res.redirect('/');
+});
 
 app.post('/login',  passport.authenticate('local', { successRedirect: '/profile',
                                    failureRedirect: '/',
