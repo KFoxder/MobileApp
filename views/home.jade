@@ -1,14 +1,33 @@
-h1= title
-p Welcome to #{title}
+!!! 5
+html
+  head
+    title Page Title
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css')
+    script(src='http://code.jquery.com/jquery-1.8.3.min.js')
+    script(src='http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js')
+  body
+    div(data-role='page')
+      div(data-role='header')
+        h1 Log In
+      //
+         /header 
+      div(data-role='content')
+        form(action='/login', method='post')
+          .ui-hide-label(data-role='fieldcontain')
+            label(for='username') Username:
+            input#username(type='text', name='username', value='', placeholder='Username')
+          .ui-hide-label(data-role='fieldcontain')
+            label(for='username') Password:
+            input#password(type='password', name='password', value='', placeholder='Password')
+          input(type='submit', value='Log In')
+        a(href='#', data-role='button') Sign Up
+      //
+         /content 
+      div(data-role='footer')
+        h4 Selfie App
+      //
+         /footer 
+    //
+       /page 
 
-
-a(href="add") Add a Party to the List
-br
-br
-br
-h4 Parties : 
-ul
-        each party, i in parties
-            li
-                a(href="")= party.name+"----SCORE : "
-                a(href="")= party.score

@@ -209,19 +209,8 @@ function isLoggedIn(req, res, next){
 
 //Page routes
 app.get('/', isLoggedIn,function(req,res){
-res.send("<form action='/login' method='post'>"+
-    "<div>"+
-        "<label>Username:</label>"+
-        "<input type='text' name='username'/>"+
-    "</div>"+
-    "<div>"+
-      "  <label>Password:</label>"+
-        "<input type='password' name='password'/>"+
-    "</div>"+
- "   <div>"+
-        "<input type='submit' value='Log In'/>"+
-   " </div>"+
-"</form> ");
+
+	res.render('home');
 
 });
 
@@ -252,13 +241,11 @@ res.send("<form action='/signup' method='post'>"+
 });
 
 app.get('/profile', ensureAuthenticated, function(req,res){
-res.send("This is your Profile"+req.user.username+"!");
+
+res.render('profile', { _USERNAME : req.user.username});
 
 });
-app.get('/fail', function(req,res){
-res.send("Failed!")
 
-});
 app.get('/logout', function(req,res){
 	req.logout();
   res.redirect('/');
@@ -268,6 +255,9 @@ app.post('/login',  passport.authenticate('local', { successRedirect: '/profile'
                                    failureRedirect: '/',
                                    failureFlash: false })
 );
+app.get('/login',function(req,res){
+	res.redirect('/');
+})
 app.post('/signup',function(req,res){
 	var tempusername = req.body.username;
 	var temppass1 = req.body.password1;
@@ -284,7 +274,6 @@ app.post('/signup',function(req,res){
     res.redirect('/new');
   } else {
     console.log('user: ' + user.username + " saved.");
-    isLoggedIn;
     res.redirect('/profile');
   }
 });
