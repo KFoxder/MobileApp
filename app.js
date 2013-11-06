@@ -221,6 +221,7 @@ app.get('/', isLoggedIn,function(req,res){
 app.get('/new', isLoggedIn, function(req,res){
 res.render('new');
 
+
 });
 
 app.get('/profile', ensureAuthenticated, function(req,res){
@@ -256,8 +257,13 @@ app.post('/signup',function(req,res){
     console.log(err);
     res.redirect('/new');
   } else {
-    console.log('user: ' + user.username + " saved.");
-    res.redirect('/profile');
+    	console.log('user: ' + user.username + " saved.");
+		req.login(user, function(err) {
+        	if (err) {
+          	console.log(err);
+        	}
+        	return res.redirect('/profile');
+      	});
   }
 });
 	}
