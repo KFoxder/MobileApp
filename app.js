@@ -24,8 +24,12 @@ var app = express();
 
 
 //CONNECT TO MONGODB
-  var mongoose = require('mongoose');
-  mongoose.connect('mongodb://localhost/test');
+
+//Using a production mongoDB
+
+//  mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://nodejitsu_kfox2010:3u0gu354meqcoi8mhqno35648p@ds045978.mongolab.com:45978/nodejitsu_kfox2010_nodejitsudb3411343009');
+
   var db = mongoose.connection;
 
 
@@ -215,28 +219,7 @@ app.get('/', isLoggedIn,function(req,res){
 });
 
 app.get('/new', isLoggedIn, function(req,res){
-
-res.send("<form action='/signup' method='post'>"+
-    "<div>"+
-        "<label>Username:</label>"+
-        "<input type='text' name='username'/>"+
-    "</div>"+
-    "<div>"+
-        "<label>Email:</label>"+
-        "<input type='text' name='email'/>"+
-    "</div>"+
-    "<div>"+
-      "  <label>Password:</label>"+
-        "<input type='password' name='password1'/>"+
-    "</div>"+
-     "<div>"+
-      "  <label>Password:</label>"+
-        "<input type='password' name='password2'/>"+
-    "</div>"+
- "   <div>"+
-        "<input type='submit' value='Signup'/>"+
-   " </div>"+
-"</form> ");
+res.render('new');
 
 });
 

@@ -1,7 +1,7 @@
 !!! 5
 html
   head
-    title Log In
+    title Signup
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css')
     script(src='http://code.jquery.com/jquery-1.8.3.min.js')
@@ -9,19 +9,25 @@ html
   body
     div(data-role='page')
       div(data-role='header')
-        h1 Log In
+        h1 Signup
       //
          /header 
       div(data-role='content')
-        form(action='/login', data-transition='slide', method='post')
+        form(action='/signup', data-transition='slide', method='post')
           .ui-hide-label(data-role='fieldcontain')
             label(for='username') Username:
             input#username(type='text', name='username', value='', placeholder='Username')
           .ui-hide-label(data-role='fieldcontain')
-            label(for='username') Password:
-            input#password(type='password', name='password', value='', placeholder='Password')
-          input(type='submit', value='Log In')
-        a(data-transition='slide', href='/new', data-role='button') Sign Up
+            label(for='email') Email:
+            input#email(type='text', name='email', value='', placeholder='Email')
+          .ui-hide-label(data-role='fieldcontain')
+            label(for='password1') Password:
+            input#password1(type='password', name='password1', value='', placeholder='Password')
+          .ui-hide-label(data-role='fieldcontain')
+            label(for='password2') Password:
+            input#password2(type='password', name='password2', value='', placeholder='Password')
+          input(type='submit', value='Create Account')
+        a(data-transition='slide', href='/', data-role='button') Already have an account?
       //
          /content 
       div(data-role='footer')
