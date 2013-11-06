@@ -1,7 +1,7 @@
 !!! 5
 html
   head
-    title Page Title
+    title Log In
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css')
     script(src='http://code.jquery.com/jquery-1.8.3.min.js')
@@ -13,7 +13,7 @@ html
       //
          /header 
       div(data-role='content')
-        form(action='/login', method='post')
+        form(action='/login', data-transition='slide', method='post')
           .ui-hide-label(data-role='fieldcontain')
             label(for='username') Username:
             input#username(type='text', name='username', value='', placeholder='Username')
@@ -21,7 +21,7 @@ html
             label(for='username') Password:
             input#password(type='password', name='password', value='', placeholder='Password')
           input(type='submit', value='Log In')
-        a(href='#', data-role='button') Sign Up
+        a(data-transition='slide', href='#', data-role='button') Sign Up
       //
          /content 
       div(data-role='footer')
@@ -30,4 +30,3 @@ html
          /footer 
     //
        /page 
-

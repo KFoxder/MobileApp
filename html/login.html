@@ -1,7 +1,7 @@
 	<!DOCTYPE html> 
 	<html> 
 	<head> 
-		<title>Page Title</title> 
+		<title>Log In</title> 
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1"> 
 
@@ -18,7 +18,7 @@
 		</div><!-- /header -->
 
 		<div data-role="content">	
-			<form action="/login" method="post"> 	
+			<form action="/login"  data-transition="slide" method="post"> 	
 				<div data-role="fieldcontain" class="ui-hide-label">
 					<label for="username">Username:</label>
 					<input type="text" name="username" id="username" value="" placeholder="Username"/>
@@ -30,11 +30,11 @@
 				<input type="submit" value="Log In" />
 			</form>
 
-		<a href="#" data-role="button">Sign Up</a>
+		<a data-transition="slide" href="#" data-role="button">Sign Up</a>
 		</div><!-- /content -->
 
 		<div data-role="footer">
-			<h4>Sign Up</h4>
+			<h4>Selfie App</h4>
 		</div><!-- /footer -->
 	</div><!-- /page -->
 	</body>
