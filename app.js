@@ -75,8 +75,10 @@ userSchema.methods.generateRandomToken = function () {
   }
   return token;
 };
+
 // Seed a user
 var User = mongoose.model('User', userSchema);
+/*
 var user = new User({ username: 'bob', email: 'bob@example.com', password: 'secret' });
 user.save(function(err) {
   if(err) {
@@ -86,7 +88,7 @@ user.save(function(err) {
     console.log('user: ' + user.username + " saved.");
   }
 });
-
+*/
 
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
@@ -223,12 +225,34 @@ res.send("<form action='/login' method='post'>"+
 
 });
 
-app.get('/signup', function(req,res){
+app.get('/new', isLoggedIn, function(req,res){
+
+res.send("<form action='/signup' method='post'>"+
+    "<div>"+
+        "<label>Username:</label>"+
+        "<input type='text' name='username'/>"+
+    "</div>"+
+    "<div>"+
+        "<label>Email:</label>"+
+        "<input type='text' name='email'/>"+
+    "</div>"+
+    "<div>"+
+      "  <label>Password:</label>"+
+        "<input type='password' name='password1'/>"+
+    "</div>"+
+     "<div>"+
+      "  <label>Password:</label>"+
+        "<input type='password' name='password2'/>"+
+    "</div>"+
+ "   <div>"+
+        "<input type='submit' value='Signup'/>"+
+   " </div>"+
+"</form> ");
 
 });
 
 app.get('/profile', ensureAuthenticated, function(req,res){
-res.send("Pass!");
+res.send("This is your Profile"+req.user.username+"!");
 
 });
 app.get('/fail', function(req,res){
@@ -240,6 +264,29 @@ app.post('/login',  passport.authenticate('local', { successRedirect: '/profile'
                                    failureRedirect: '/',
                                    failureFlash: false })
 );
+app.post('/signup',function(req,res){
+	var tempusername = req.body.username;
+	var temppass1 = req.body.password1;
+	var temppass2 = req.body.password2;
+	var tempemail = req.body.email;
+	if((temppass2 != temppass1) || tempusername == '' || tempemail == ''){
+		res.redirect('/new');
+	}else{
+		var user = new User({ username: tempusername, email: tempemail, password: temppass1 });
+		user.save(function(err) {
+  	if(err) {
+  	console.log("ERROR SAVING!");
+    console.log(err);
+    res.redirect('/new');
+  } else {
+    console.log('user: ' + user.username + " saved.");
+    isLoggedIn;
+    res.redirect('/profile');
+  }
+});
+	}
+
+});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
