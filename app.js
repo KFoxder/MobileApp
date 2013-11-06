@@ -8,12 +8,14 @@ var routes = require('./routes');
 
 //Homepage
 var home = require('./routes/home');
-
+var add = require('./routes/add');
 var http = require('http');
 var path = require('path');
 
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
+var PhotoModelFile = require('./data/schemas/PhotoSchema.js');
+
 
 var app = express();
 
@@ -35,32 +37,20 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-//Connect to DB
-mongoose.connect('mongodb://localhost/test');
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback () {
-	  console.log("Connected to MongoDB!");
-	});
 
-//Define Schemas for Party
 
-//Define Enums for Locations
-var LOCATIONS = 'Manhattan Brooklyn Queens Bronx Staten'.split(' ');
-
-var PartySchema =  new mongoose.Schema({
-    name: {type: String, trim: true},
-    location: {type: String, trim: true, enum: LOCATIONS},
-    score : {type: Number}
-});
-
-var Party = mongoose.model('Party', PartySchema);
+//Get PartyModel
+var PhotoModel = PhotoModelFile.getModel();
 
 //Page routes
 app.get('/', routes.index);
-app.get('/home', home.home(Party));
+app.get('/home', home.home(PhotoModel));
+/*
+app.get('/add', add.show());
 
+app.post('/addPhoto', add.add(PhotoModel));
 
+*/
 
 
 http.createServer(app).listen(app.get('port'), function(){

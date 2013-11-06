@@ -5,23 +5,12 @@
 
 
 
-exports.home = function(Party){
+exports.home = function(PhotoModel){
 
 
 var ReturnVal = function(req, res){
 
-  Party.find(function(err, parties){
-  		if(err){
-  			console.log(err);
-  		}else{
-  			console.log(parties);
-
-  			res.render('home', { 
-  				title: 'Party Trender',
-  				parties: parties
-  			});
-  		}
-  });
+  
 
   
 };
