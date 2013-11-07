@@ -53,12 +53,7 @@ app.use(passport.session());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-var photo = new db.photoModel({photoLink: 'this.com/me.jpg'});
-photo.save(function(err){
-	if(err){
-		console.log('ERROR SAVING : '+err);
-	};
-});
+
 
 // development only
 if ('development' == app.get('env')) {
@@ -73,6 +68,8 @@ app.get('/logout', routes.logout);
 app.get('/login', routes.login);
 app.get('/account', pass.ensureAuthenticated, routes.account);
 app.get('/signup',routes.login);
+app.get('/addPhoto',pass.ensureAuthenticated, routes.addPhoto);
+app.get('/myphotos',pass.ensureAuthenticated, routes.myphotos);
 
 //Page routes POST
 app.post('/login',  passport.authenticate('local', { successRedirect: '/profile',

@@ -11,7 +11,6 @@ var passport = require('passport')
 //   Both serializer and deserializer edited for Remember Me functionality
 
 
-
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });

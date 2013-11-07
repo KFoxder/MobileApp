@@ -61,6 +61,8 @@ userSchema.methods.generateRandomToken = function () {
 // User Model
 var userModel = mongoose.model('User', userSchema, 'UserCollection');
 
+
+//Photo Model
 var photoSchema = new mongoose.Schema({
 
 	photoLink: {type: String, required: true},
@@ -73,7 +75,8 @@ photoSchema.pre('save', function(next){
 
 	var photo = this;
 	var photoID = this._id;
-	console.log(photoID);
+	
+
 	return next();
 
 });
@@ -81,9 +84,8 @@ photoSchema.pre('save', function(next){
 var photoModel = mongoose.model('Photo', photoSchema, 'PhotoCollection');
 
 
+//Exports 
 exports.userModel = userModel;
-
-
 exports.photoModel = photoModel;
 
 
