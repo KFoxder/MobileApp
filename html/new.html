@@ -8,12 +8,13 @@
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css" />
 		<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js"></script>
+		<script src="./js/signup.js"></script>
 	</head> 
 
 	<body> 
-	<div data-role="page">
+	<div data-role="page" data-theme="b">
 
-		<div data-role="header">
+		<div data-theme="b" data-role="header">
 			<h1>Signup</h1>
 		</div><!-- /header -->
 
@@ -35,13 +36,13 @@
 					<label for="password2">Password:</label>
 					<input type="password" name="password2" id="password2" value="" placeholder="Password"/>
 				</div>
-				<input type="submit" value="Create Account" />
+				<input type="submit" id="signupButton" value="Create Account" />
 			</form>
 
-		<a data-transition="slide" href="/" data-role="button">Already have an account?</a>
+		<a data-transition="slide" data-direction="reverse" href="/" data-role="button">Already have an account?</a>
 		</div><!-- /content -->
 
-		<div data-role="footer">
+		<div data-theme="b" data-role="footer">
 			<h4>Selfie App</h4>
 		</div><!-- /footer -->
 	</div><!-- /page -->

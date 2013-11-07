@@ -1,7 +1,7 @@
 	<!DOCTYPE html> 
 	<html> 
 	<head> 
-		<title>=_USERNAME+'Profile'</title> 
+		<title>=_USERNAME+'Account'</title> 
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1"> 
 
@@ -14,23 +14,31 @@
 	<div data-theme="b" data-role="page">
 
 		<div data-theme="b" data-role="header">
-			<a href="/logout" class="ui-btn-left" data-transition="slide" data-direction="reverse" data-theme="b">Log Out</a>
+			<a href="/profile" class="ui-btn-left" data-transition="slide" data-direction="reverse" data-icon="arrow-l" data-role="button" data-iconpos="notext" data-theme="b"> </a>
 			<h1>=_USERNAME</h1>
-			<a href="/#" class="ui-btn-right" data-icon="grid" data-role="button" data-iconpos="notext" data-theme="b"> </a>
+			<a href="#" class="ui-btn-right" data-icon="grid" data-role="button" data-iconpos="notext" data-theme="b"> </a>
 		</div><!-- /header -->
 
-		<div data-role="content">
-			<div id="currentImage" style= 'text-align :center'>
-				<img src="https://pbs.twimg.com/profile_images/2800360366/5190757a586da1191dc032d4aade7189.jpeg"/>
-			</div>	
-			
+		<div data-role="content">	
+			<div data-role="collapsible">
+   				<h3>Username</h3>
+  				<p>=_USERNAME</p>
+			</div>
+			<div data-role="collapsible">
+   				<h3>Email</h3>
+  				<p>=_EMAIL</p>
+			</div>
+			<div data-role="collapsible">
+   				<h3>Date Joined</h3>
+  				<p>_DATEJOINED</p>
+			</div>
 		</div><!-- /content -->
 
 		<div data-role="footer" data-id="foo1" data-position="fixed">
 			<div data-role="navbar">
 				<ul>
-					<li><a href="/myphotos" data-transition="slide" >My Photo</a></li>
-					<li><a href="/account" data-transition="slide" >My Account</a></li>
+					<li><a href="#">My Photo</a></li>
+					<li><a href="#">My Account</a></li>
 				</ul>
 			</div><!-- /navbar -->
 		</div><!-- /footer -->

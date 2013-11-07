@@ -1,7 +1,7 @@
 !!! 5
 html
   head
-    title= _USERNAME+'Profile'
+    title= _USERNAME+'Account'
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css')
     script(src='http://code.jquery.com/jquery-1.8.3.min.js')
@@ -9,23 +9,30 @@ html
   body
     div(data-theme='b', data-role='page')
       div(data-theme='b', data-role='header')
-        a.ui-btn-left(href='/logout', data-transition='slide', data-direction='reverse' , data-theme='b') Log Out
+        a.ui-btn-left(href='/profile', data-transition='slide', data-direction='reverse' , data-icon='arrow-l', data-role='button', data-iconpos='notext', data-theme='b')  
         h1= _USERNAME
-        a.ui-btn-right(href='/#', data-icon='grid', data-role='button', data-iconpos='notext', data-theme='b')  
+        a.ui-btn-right(href='#', data-icon='grid', data-role='button', data-iconpos='notext', data-theme='b')  
       //
          /header 
       div(data-role='content')
-        div(id='currentImage' , style= 'text-align :center')
-          img(src='https://pbs.twimg.com/profile_images/2800360366/5190757a586da1191dc032d4aade7189.jpeg')
+        div(data-role='collapsible')
+          h3 Username
+          p= _USERNAME
+        div(data-role='collapsible')
+          h3 Email
+          p= _EMAIL
+        div(data-role='collapsible')
+          h3 Date Joined
+          p= _DATEJOINED
       //
          /content 
       div(data-role='footer', data-id='foo1', data-position='fixed')
         div(data-role='navbar')
           ul
             li
-              a(href='/myphotos', data-transition='slide') My Photo
+              a(href='#') My Photo
             li
-              a(href='/account', data-transition='slide') My Account
+              a(href='#') My Account
         //
            /navbar 
       //
