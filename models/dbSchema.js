@@ -67,6 +67,7 @@ var userModel = mongoose.model('User', userSchema, 'UserCollection');
 var photoSchema = new mongoose.Schema({
 
 	photoLink: {type: String, required: true},
+	photoName: {type: String, require:true},
 	dateAdded: {type: Date, default: Date.now, required: true},
 	numberOfRate: {type: Number, Min: 0, default: 0, required: true},
 	currentRating: {type: Number, Min: 0, default: 0, required: true}

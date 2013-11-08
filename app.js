@@ -68,6 +68,7 @@ app.get('/account', pass.ensureAuthenticated, routes.account);
 app.get('/signup',routes.login);
 app.get('/uploadPhoto',routes.login);
 app.get('/myphotos',pass.ensureAuthenticated, routes.myphotos);
+app.get('/deletePhoto/:name?', pass.ensureAuthenticated, routes.deletePhoto);
 
 //Page routes POST
 app.post('/login',  passport.authenticate('local', { successRedirect: '/profile',
