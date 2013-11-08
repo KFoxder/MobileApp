@@ -1,7 +1,7 @@
 !!! 5
 html
   head
-    title= _USERNAME+' Profile'
+    title= _USERNAME+' Feed'
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css')
     
@@ -18,7 +18,7 @@ html
     div(data-theme='b', data-role='page')
       div(data-theme='b', data-role='header')
         a.ui-btn-left(href='/logout', data-transition='slide', data-direction='reverse' , data-theme='b') Log Out
-        h1= _USERNAME
+        h1= _USERNAME+"'s Feed"
         form.ui-btn-right(action='/uploadPhoto' , id='fileUploadForm' , method='post' , enctype="multipart/form-data")
           label.cabinet()
             input.file(type='file' , accept='image/*' , capture='camera', id='fileUploadInput' , onchange='this.form.submit()' , name='photo')
@@ -28,7 +28,13 @@ html
       div(data-role='content' , style= 'text-align :center')
         
         div(id='currentImage')
-          img(src='/photos/noUpload.jpg')
+          img(src='/photos/#{_PHOTO}')
+          div(id='ratingButtons')
+            a(href='#' , data-role="button" , data-inline="true" , data-theme="a") disLike
+            
+            a(href='#' , data-role="button" , data-inline="true" , data-theme="b") Like
+          div(id='currentImageRating')
+            p= 'Rating = '+ _PHOTORATING
       //
          /content 
       div(data-role='footer', data-id='foo1', data-position='fixed')

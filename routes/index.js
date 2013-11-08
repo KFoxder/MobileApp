@@ -7,6 +7,8 @@ var check = require('validator').check
 , db = require('../models/dbSchema.js')
 , fs = require('fs')
 , path = require('path')
+, im = require('imagemagick')
+, easyimg = require('easyimage')
 , gm = require('gm');
 
 exports.homepage = function(req, res){
@@ -23,7 +25,11 @@ exports.myphotos = function(req, res){
 	var waiting = 0;
 
 	//Loop through photoIDs for the user and adds them to the above array
-	for (var i = photoIDs.length - 1; i >= 0; i--) {
+	if(photoIDs.length==0){
+		complete();
+
+	}else{
+		for (var i = photoIDs.length - 1; i >= 0; i--) {
 		
 		waiting++;
 		db.photoModel.findById(photoIDs[i],function(err,doc){
@@ -41,23 +47,26 @@ exports.myphotos = function(req, res){
 			}
 		});
 	
-	};
+		};
+
+	}
+
 
 	//Callback function when iterating is done
 	function complete(){
-	if(waiting==0)
-	{
-		if(photoLinks.length < 1){
-			photoLinks = ['noUpload.jpg'];
+		if(waiting==0)
+		{
+			if(photoLinks.length < 1){
+				photoLinks = ['noUpload.jpg'];
+			}
+			res.render('myphotos',{
+			_USERNAME : req.user.username,
+			_PHOTOS: photoLinks
+			});
 		}
-		res.render('myphotos',{
-		_USERNAME : req.user.username,
-		_PHOTOS: photoLinks
-		});
-	}
-	};
+		};
 
-};
+	};
 
 
 exports.new = function(req,res){
@@ -66,7 +75,35 @@ res.render('new');
 
 };
 exports.profile = function(req,res){
-res.render('profile', { _USERNAME : req.user.username});
+
+
+db.photoModel.findOne({},function(err,doc){
+	if(err){
+		console.log('Error Finding Photo!');
+
+	}else{
+		if(doc){
+			var photoName = path.basename(doc.photoLink);
+			var photoRating = doc.currentRating;
+			complete(photoName, photoRating);
+
+		}else{
+			complete('noUpload.jpg');
+		}
+	}
+
+});
+function complete(photoName, photoRating){
+
+	res.render('profile', { 
+		_USERNAME : req.user.username, 
+		_PHOTO: photoName,
+		_PHOTORATING: photoRating});
+
+}
+
+
+
 
 };
 
@@ -101,7 +138,7 @@ exports.deletePhoto = function(req,res){
 			if(doc){
 				var photoToDeleteID = doc.id;
 				//Remove Photo from photoCollections
-				db.photoModel.findByIdAndRemove(photoToDeleteID, complete(photoName,photoToDeleteID));
+				doc.remove(complete(photoName,photoToDeleteID));
 				
 			}else{
 				res.redirect('/myphotos');
@@ -151,7 +188,9 @@ exports.uploadPhoto = function(req,res){
 		  	var photoID = photo.id;
 		  	req.user.photos.push(photoID);
 		  	req.user.save();
-		    res.redirect("/myphotos");
+		  	res.redirect('/profile');
+			
+		    
 		  
 		});
 	}else{
