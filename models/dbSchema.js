@@ -46,6 +46,7 @@ userSchema.methods.comparePassword = function(candidatePassword, cb) {
                 cb(null, isMatch);
         });
 };
+
 //Token Generation
 userSchema.methods.generateRandomToken = function () {
   var user = this,

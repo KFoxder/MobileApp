@@ -1,0 +1,55 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install', 'fs' ]
+2 info using npm@1.3.11
+3 info using node@v0.10.21
+4 warn package.json mongoose@3.8.0 bugs.email field must be a string email. Deleted.
+5 verbose readDependencies using package.json deps
+6 verbose cache add [ 'fs', null ]
+7 verbose cache add name=undefined spec="fs" args=["fs",null]
+8 verbose parsed url { protocol: null,
+8 verbose parsed url   slashes: null,
+8 verbose parsed url   auth: null,
+8 verbose parsed url   host: null,
+8 verbose parsed url   port: null,
+8 verbose parsed url   hostname: null,
+8 verbose parsed url   hash: null,
+8 verbose parsed url   search: null,
+8 verbose parsed url   query: null,
+8 verbose parsed url   pathname: 'fs',
+8 verbose parsed url   path: 'fs',
+8 verbose parsed url   href: 'fs' }
+9 silly lockFile 3f4bb586-fs fs
+10 verbose lock fs /Users/kevin_fox/.npm/3f4bb586-fs.lock
+11 silly lockFile 3f4bb586-fs fs
+12 silly lockFile 3f4bb586-fs fs
+13 verbose addNamed [ 'fs', '' ]
+14 verbose addNamed [ null, '*' ]
+15 silly lockFile a107b96b-fs fs@
+16 verbose lock fs@ /Users/kevin_fox/.npm/a107b96b-fs.lock
+17 silly addNameRange { name: 'fs', range: '*', hasData: false }
+18 verbose url raw fs
+19 verbose url resolving [ 'https://registry.npmjs.org/', './fs' ]
+20 verbose url resolved https://registry.npmjs.org/fs
+21 info trying registry request attempt 1 at 17:00:40
+22 http GET https://registry.npmjs.org/fs
+23 http 404 https://registry.npmjs.org/fs
+24 silly registry.get cb [ 404,
+24 silly registry.get   { server: 'CouchDB/1.3.1 (Erlang OTP/R15B03)',
+24 silly registry.get     date: 'Thu, 07 Nov 2013 22:00:41 GMT',
+24 silly registry.get     'content-type': 'application/json',
+24 silly registry.get     'content-length': '52',
+24 silly registry.get     'cache-control': 'must-revalidate' } ]
+25 silly lockFile a107b96b-fs fs@
+26 silly lockFile a107b96b-fs fs@
+27 error 404 'fs' is not in the npm registry.
+27 error 404 You should bug the author to publish it
+27 error 404
+27 error 404 Note that you can also install from a
+27 error 404 tarball, folder, or http url, or git url.
+28 error System Darwin 11.4.2
+29 error command "node" "/usr/local/bin/npm" "install" "fs"
+30 error cwd /Users/kevin_fox/Documents/Fall 2013/Nodejs/appTest1
+31 error node -v v0.10.21
+32 error npm -v 1.3.11
+33 error code E404
+34 verbose exit [ 1, true ]

@@ -4,7 +4,9 @@
  */
 var check = require('validator').check
 , sanitize = require('validator').sanitize
-, db = require('../models/dbSchema.js');
+, db = require('../models/dbSchema.js')
+, fs = require('fs')
+, path = require('path');
 
 exports.homepage = function(req, res){
 
@@ -16,34 +18,38 @@ exports.myphotos = function(req, res){
 	//Gets an Array of Photo ObjectIds for the user
 	var photoIDs = req.user.photos.toObject();
 	var photoLinks = new Array();
-	var photoScores = [];
+	var photoScores = new Array();
 	var waiting = 0;
 
+	//Loop through photoIDs for the user and adds them to the above array
 	for (var i = photoIDs.length - 1; i >= 0; i--) {
-		console.log("Photo ID : "+photoIDs[i]);
+		
 		waiting++;
-
 		db.photoModel.findById(photoIDs[i],function(err,doc){
 			if(err){
 				console.log('ERROR FINDING PHOTO WITH ID' + err);
 			}else{
 				waiting--;
-				console.log("Photo Link : "+doc.photoLink);
-				console.log("Photo Score : "+doc.photoScore);
-				photoLinks.push(doc.photoLink);
-				photoScores.push(doc.currentRating);
+				//console.log("Photo Link : "+doc.photoLink);
+				//console.log("Photo Score : "+doc.photoScore);
+				if(doc){
+					photoLinks.push(doc.photoLink);
+					photoScores.push(doc.currentRating);
+				}
 				complete();
 
 			}
 		});
+	
 	};
 
 	//Callback function when iterating is done
 	function complete(){
 	if(waiting==0)
 	{
-		console.log("Array of Links : "+photoLinks);
-		console.log("Array of Links : "+photoScores);
+		if(photoLinks.length < 1){
+			photoLinks = ['/photos/noUpload.jpg'];
+		}
 		res.render('myphotos',{
 		_USERNAME : req.user.username,
 		_PHOTOS: photoLinks
@@ -51,43 +57,8 @@ exports.myphotos = function(req, res){
 	}
 	};
 
-
-
-
-
-
 };
-exports.addPhoto = function(req,res){
 
-	var photo = new db.photoModel({photoLink: 'https://lh4.googleusercontent.com/-oqGrC6ew0Mk/AAAAAAAAAAI/AAAAAAAAAAA/R2DfnA227qE/photo.jpg'});
-	var user = req.user;
-	photo.save(function(err){
-	if(err){
-		console.log('ERROR SAVING : '+err);
-	};
-
-	//Push new Photo onto current user and save
-	user.photos.push(photo.id);
-	user.save();
-	//console.log(req.user.photos);
-
-	var username = user.username;
-	var photoIDs = req.user.photos.toObject();
-	var photoModel = db.photoModel;
-
-	for (var i = photoIDs.length - 1; i >= 0; i--) {
-		console.log(photoIDs[i]);
-		db.photoModel.findById(photoIDs[i],function(err,doc){
-			if(err){
-				console.log('ERROR FINDING PHOTO WITH ID' + err);
-			}else{
-				console.log(doc.photoLink);
-			}
-		});
-	};
-
-});
-};
 
 exports.new = function(req,res){
 res.render('new');
@@ -119,6 +90,41 @@ exports.account = function(req,res){
 		});
 
 };
+
+exports.uploadPhoto = function(req,res){
+	if(req.files){
+		console.log(req.files);
+		fs.readFile(req.files.photo.path, function (err, data) {
+		  // ...
+		  /*
+		  var newPath ="./photos/newFile.png";
+		  fs.writeFile(newPath, data, function (err) {
+		  	if(err){
+		  		console.log(err);
+		  	}
+		  	});
+		  */
+
+		  	//Create new Photo object and save to mongoDB!!
+		  	//Get the photo name and add it to /photos/ since we know thats
+		  	//where all photos are stored.
+
+		  	var photoName = path.basename(req.files.photo.path);
+		  	var photoPath = '/photos/'+photoName;
+		  	var photo = new db.photoModel({photoLink:photoPath});
+		  	photo.save();
+		  	var photoID = photo.id;
+		  	req.user.photos.push(photoID);
+		  	req.user.save();
+		    res.redirect("myphotos");
+		  
+		});
+	}else{
+		res.redirect('profile');
+	}
+	
+};
+
 exports.signup = function(req,res){
 	var tempusername = sanitize(req.body.username).trim();
 	var temppass1 = req.body.password1;
