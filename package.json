@@ -1,6 +1,6 @@
 {
   "name": "application-name",
-  "version": "0.0.1-9",
+  "version": "0.0.1-10",
   "private": true,
   "scripts": {
     "start": "node app.js"
@@ -15,7 +15,8 @@
     "connect-mongodb": "1.1.5",
     "passport": "0.1.17",
     "passport-local": "0.1.6",
-    "validator": " 2.0.x"
+    "validator": " 2.0.x",
+    "gm": "1.13.3"
   },
   "subdomain": "apptest1",
   "engines": {

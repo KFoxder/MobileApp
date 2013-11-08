@@ -6,7 +6,8 @@ var check = require('validator').check
 , sanitize = require('validator').sanitize
 , db = require('../models/dbSchema.js')
 , fs = require('fs')
-, path = require('path');
+, path = require('path')
+, gm = require('gm');
 
 exports.homepage = function(req, res){
 
@@ -31,7 +32,8 @@ exports.myphotos = function(req, res){
 			}else{
 				waiting--;
 				if(doc){
-					photoLinks.push(doc.photoLink);
+					//console.log(path.basename(doc.photoLink));
+					photoLinks.push(path.basename(doc.photoLink));
 					photoScores.push(doc.currentRating);
 				}
 				complete();
@@ -46,7 +48,7 @@ exports.myphotos = function(req, res){
 	if(waiting==0)
 	{
 		if(photoLinks.length < 1){
-			photoLinks = ['/photos/noUpload.jpg'];
+			photoLinks = ['noUpload.jpg'];
 		}
 		res.render('myphotos',{
 		_USERNAME : req.user.username,
@@ -95,9 +97,16 @@ exports.deletePhoto = function(req,res){
 			console.log(err);
 			res.redirect('/myphotos');
 		}else{
-		var photoToDeleteID = doc.id;
-		complete(photoName,photoToDeleteID);
-		}
+			//if a photo to be deleted is return we go ahead and delete else we just go back to myPhotos
+			if(doc){
+				var photoToDeleteID = doc.id;
+				//Remove Photo from photoCollections
+				db.photoModel.findByIdAndRemove(photoToDeleteID, complete(photoName,photoToDeleteID));
+				
+			}else{
+				res.redirect('/myphotos');
+			}
+		};
 	});
 	
 
@@ -105,8 +114,7 @@ exports.deletePhoto = function(req,res){
 		//Check if that Object exists first
 		if(photoToDeleteID){
 			
-			//Remove Photo from photoCollections
-			db.photoModel.findByIdAndRemove(photoToDeleteID);
+			
 			//Remove PhotoObject from user photos
 			var index = req.user.photos.indexOf(photoToDeleteID);
 			req.user.photos.splice(index,1);
@@ -131,20 +139,11 @@ exports.uploadPhoto = function(req,res){
 	if(req.files){
 		console.log(req.files);
 		fs.readFile(req.files.photo.path, function (err, data) {
-		  // ...
-		  /*
-		  var newPath ="./photos/newFile.png";
-		  fs.writeFile(newPath, data, function (err) {
-		  	if(err){
-		  		console.log(err);
-		  	}
-		  	});
-		  */
 
 		  	//Create new Photo object and save to mongoDB!!
 		  	//Get the photo name and add it to /photos/ since we know thats
 		  	//where all photos are stored.
-
+		 
 		  	var newPhotoName = path.basename(req.files.photo.path);
 		  	var photoPath = '/photos/'+newPhotoName;
 		  	var photo = new db.photoModel({photoLink:photoPath, photoName:newPhotoName});
@@ -152,11 +151,11 @@ exports.uploadPhoto = function(req,res){
 		  	var photoID = photo.id;
 		  	req.user.photos.push(photoID);
 		  	req.user.save();
-		    res.redirect("myphotos");
+		    res.redirect("/myphotos");
 		  
 		});
 	}else{
-		res.redirect('profile');
+		res.redirect('/profile');
 	}
 	
 };

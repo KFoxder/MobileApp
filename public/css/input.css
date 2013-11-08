@@ -1,0 +1,20 @@
+.SI-FILES-STYLIZED label.cabinet
+{
+    width: 30px;
+    height: 30px;
+    background: url(/photos/camera.png) 0 0 no-repeat;
+
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.SI-FILES-STYLIZED label.cabinet input.file
+{
+    position: relative;
+    height: 100%;
+    width: auto;
+    opacity: 0;
+    -moz-opacity: 0;
+    filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+}
