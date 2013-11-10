@@ -11,13 +11,14 @@ html
     script(src='./js/sifiles.js')
     script(type='text/javascript').
       SI.Files.stylizeAll();
+    
 
       
   body
 
     div(data-theme='b', data-role='page')
       div(data-theme='b', data-role='header')
-        a.ui-btn-left(href='/logout', data-transition='slide', data-direction='reverse' , data-theme='b') Log Out
+        a.ui-btn-left(href='/logout', data-transition='slide', data-direction='reverse' , data-theme='b' ) Log Out
         h1= _USERNAME+"'s Feed"
         form.ui-btn-right(action='/uploadPhoto' , id='fileUploadForm' , method='post' , enctype="multipart/form-data")
           label.cabinet()
@@ -28,11 +29,10 @@ html
       div(data-role='content' , style= 'text-align :center')
         
         div(id='currentImage')
-          img(src='/photos/#{_PHOTO}')
+          img(src='/photos/#{_PHOTO}' , width='auto' , height='250px')
           div(id='ratingButtons')
-            a(href='#' , data-role="button" , data-inline="true" , data-theme="a") disLike
-            
-            a(href='#' , data-role="button" , data-inline="true" , data-theme="b") Like
+            a#noLikeButton(href='/updatePhoto?name=#{_PHOTO}&rating=dislike' , data-role="button" , data-inline="true" , data-theme="a" , rel="external") disLike
+            a#LikeButton(href='/updatePhoto?name=#{_PHOTO}&rating=like' , data-role="button" , data-inline="true" , data-theme="b" , rel="external") Like
           div(id='currentImageRating')
             p= 'Rating = '+ _PHOTORATING
       //
@@ -41,9 +41,11 @@ html
         div(data-role='navbar')
           ul
             li
-              a(href='/myphotos', data-transition='slide') My Photo
+              a(href='/myphotos', data-transition='slide', data-direction='reverse') My Photo
             li
-              a(href='/account', data-transition='slide') My Account
+              a(href='#' , rel="external") My Feed
+            li
+              a(href='/account', data-transition='slide' ) My Account
         //
            /navbar 
       //

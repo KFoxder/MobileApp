@@ -11,6 +11,7 @@ html
     script(type='text/javascript').
       SI.Files.stylizeAll();
       
+
   body
     div(data-theme='b', data-role='page')
       div(data-theme='b', data-role='header')
@@ -23,15 +24,21 @@ html
          /header 
       div(data-role='content', style= 'text-align :center')
         for photo, i in _PHOTOS
-          a(href='/deletePhoto?name=#{photo}')
-            img(src='/photos/#{photo}')
+          img(src='/photos/#{photo}' , width='auto' , height='270px')
+          div()
+            a(href='/deletePhoto?name=#{photo}' , rel="external" , data-role='button' , data-icon='delete' , data-mini="true", data-inline="true",style='max-width:100px;') Delete
+            a(href='#' , rel="external" , data-role='button' , data-icon='edit' , data-mini="true", data-inline="true",style='max-width:100px;', data-theme='e') Edit
+
+            
       //
          /content 
-      div(data-role='footer', data-id='foo1', data-position='fixed')
+      div(data-role='footer', data-position='fixed')
         div(data-role='navbar')
           ul
             li
-              a(href='#') My Photo
+              a(href='#' , rel="external") My Photo
+            li
+              a(href='/profile' , rel="external") My Feed
             li
               a(href='/account') My Account
         //

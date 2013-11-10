@@ -74,10 +74,15 @@ res.render('new');
 
 
 };
+exports.profileNext = function(req,res){
+
+};
 exports.profile = function(req,res){
 
-
-db.photoModel.findOne({},function(err,doc){
+//
+//Find a photo that a user hasn't uploaded or rated
+var user = req.user.username;
+db.photoModel.findOne({ userUpload: { $nin:[user]} , userRated:{ $nin:[user]}},function(err,doc){
 	if(err){
 		console.log('Error Finding Photo!');
 
@@ -124,6 +129,53 @@ exports.account = function(req,res){
 			_EMAIL : req.user.email,
 			_DATEJOINED : req.user.dateCreated
 		});
+
+};
+exports.updatePhoto = function(req,res){
+	var photoName = req.query.name;
+	var rating = req.query.rating;
+	if(rating && photoName){
+		var photoToUpdate = db.photoModel.findOne({'photoName': photoName},function(err,doc){
+		if(err){
+			console.log(err);
+			res.redirect('/profile');
+		}else{
+			//if a photo to be updated is return we go ahead and update else we just go back to profile
+			if(doc){
+				if(rating=='like'){
+					console.log('LIKE');
+					doc.numberOfRate = doc.numberOfRate + 1;
+					doc.currentRating = doc.currentRating +1;
+					doc.userRated.push(req.user.username);
+					doc.save(function(err){
+						res.redirect('/profile');
+					});
+					console.log(doc);
+					
+				}else{
+					console.log('DISLIKE');
+					doc.numberOfRate = doc.numberOfRate + 1;
+					doc.currentRating = doc.currentRating -1;
+					doc.userRated.push(req.user.username);
+					doc.save(function(err){
+						res.redirect('/profile');
+					});
+					console.log(doc);
+				}
+				
+
+				
+			}else{
+				res.redirect('/profile');
+			}
+		};
+	});
+
+
+	}else{
+		res.redirect('/profile');
+	}
+
 
 };
 exports.deletePhoto = function(req,res){
@@ -180,10 +232,10 @@ exports.uploadPhoto = function(req,res){
 		  	//Create new Photo object and save to mongoDB!!
 		  	//Get the photo name and add it to /photos/ since we know thats
 		  	//where all photos are stored.
-		 
+		 	var userUploaded = req.user.username;
 		  	var newPhotoName = path.basename(req.files.photo.path);
 		  	var photoPath = '/photos/'+newPhotoName;
-		  	var photo = new db.photoModel({photoLink:photoPath, photoName:newPhotoName});
+		  	var photo = new db.photoModel({photoLink:photoPath, photoName:newPhotoName , userUpload:userUploaded});
 		  	photo.save();
 		  	var photoID = photo.id;
 		  	req.user.photos.push(photoID);

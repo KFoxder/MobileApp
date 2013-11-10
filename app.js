@@ -54,7 +54,7 @@ app.use(express.static(path.join(__dirname, '/public')));
 
 
 // development only
-if ('development' == app.get('env')) {
+if ('dev' == app.get('NODE_ENV')) {
   app.use(express.errorHandler());
 }
 
@@ -69,6 +69,8 @@ app.get('/signup',routes.login);
 app.get('/uploadPhoto',routes.login);
 app.get('/myphotos',pass.ensureAuthenticated, routes.myphotos);
 app.get('/deletePhoto/:name?', pass.ensureAuthenticated, routes.deletePhoto);
+app.get('/updatePhoto/:name?/:rating?', pass.ensureAuthenticated, routes.updatePhoto);
+app.get('/profile/:next?', pass.ensureAuthenticated, routes.profileNext);
 
 //Page routes POST
 app.post('/login',  passport.authenticate('local', { successRedirect: '/profile',

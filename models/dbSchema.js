@@ -4,9 +4,20 @@ var mongoose = require('mongoose')
 
 exports.mongoose = mongoose;
 
-var uriString = 'mongodb://nodejitsu_kfox2010:3u0gu354meqcoi8mhqno35648p@ds045978.mongolab.com:45978/nodejitsu_kfox2010_nodejitsudb3411343009';
+var uriStringProd = 'mongodb://nodejitsu:839e1a4e31ce1b2ce48da3fd53b1dc8b@paulo.mongohq.com:10018/nodejitsudb4743941926'
+var uriStringDev = 'mongodb://nodejitsu_kfox2010:3u0gu354meqcoi8mhqno35648p@ds045978.mongolab.com:45978/nodejitsu_kfox2010_nodejitsudb3411343009';
 
-mongoose.connect(uriString);
+if(process.env.NODE_ENV=='prod'){
+	mongoose.connect(uriStringProd);
+	console.log('IN PRODUCUTION');
+}else if(process.env.NODE_ENV=='dev'){
+	mongoose.connect(uriStringDev);
+	console.log('IN DEV');
+}else{
+	mongoose.connect(uriStringDev);
+	console.log('IN DEV - Default');
+}
+
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -70,7 +81,9 @@ var photoSchema = new mongoose.Schema({
 	photoName: {type: String, require:true},
 	dateAdded: {type: Date, default: Date.now, required: true},
 	numberOfRate: {type: Number, Min: 0, default: 0, required: true},
-	currentRating: {type: Number, Min: 0, default: 0, required: true}
+	currentRating: {type: Number, Min: 0, default: 0, required: true},
+	userUpload: {type: String, required: true},
+	userRated: [String]
 });
 
 photoSchema.pre('save', function(next){
