@@ -30,7 +30,9 @@ var userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true},
   dateCreated: { type: Date},
-  photos: [mongoose.Schema.Types.ObjectId]
+  photos: [mongoose.Schema.Types.ObjectId],
+  photosRated: [mongoose.Schema.Types.ObjectId],
+  photosRatedResult: [String]
 });
 
 // Bcrypt middleware

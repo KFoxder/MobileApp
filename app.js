@@ -70,7 +70,8 @@ app.get('/uploadPhoto',routes.login);
 app.get('/myphotos',pass.ensureAuthenticated, routes.myphotos);
 app.get('/deletePhoto/:name?', pass.ensureAuthenticated, routes.deletePhoto);
 app.get('/updatePhoto/:name?/:rating?', pass.ensureAuthenticated, routes.updatePhoto);
-app.get('/profile/:next?', pass.ensureAuthenticated, routes.profileNext);
+app.get('/photosRated',pass.ensureAuthenticated, routes.photosRated);
+
 
 //Page routes POST
 app.post('/login',  passport.authenticate('local', { successRedirect: '/profile',

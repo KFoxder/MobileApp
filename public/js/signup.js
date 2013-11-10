@@ -1,5 +1,5 @@
-$(document).ready(function(){
 
+$( document ).delegate("#signup", "pageinit", function() {
 	//Make the signup button inactive until all fields are filled
 	var username = $('#username');
 	var email = $('#email');
@@ -8,14 +8,14 @@ $(document).ready(function(){
 
 	$('[type="submit"]').button('disable'); 
 
-	$('input').keydown(function(){
-
+	$('input').change(function(){
 		if(username.val().trim()!='' && email.val().trim()!='' && pass1.val().trim()!='' && pass2.val().trim()!=''){
 			$('[type="submit"]').button('enable'); 
 		}else{
 			$('[type="submit"]').button('disable'); 
 		}
 	});
+	
 
 
 });

@@ -74,9 +74,7 @@ res.render('new');
 
 
 };
-exports.profileNext = function(req,res){
 
-};
 exports.profile = function(req,res){
 
 //
@@ -93,7 +91,7 @@ db.photoModel.findOne({ userUpload: { $nin:[user]} , userRated:{ $nin:[user]}},f
 			complete(photoName, photoRating);
 
 		}else{
-			complete('noUpload.jpg');
+			complete('noUpload.jpg',0);
 		}
 	}
 
@@ -131,6 +129,73 @@ exports.account = function(req,res){
 		});
 
 };
+exports.photosRated = function(req,res){
+	var username = req.user.username;
+	var photosRatedID = req.user.photosRated.toObject();
+	var photosRatedResult = req.user.photosRatedResult;
+
+	var photoLinks = new Array();
+	var photoResult = new Array();
+	var result;
+
+	var waiting = 0;
+	var isRealDoc = false;
+
+	if(photosRatedID.length==0){
+		complete();
+
+	}else{
+		for (var i = photosRatedID.length - 1; i >= 0; i--) {
+
+		//get reuslt of that photo and then only push it in the complete function if 
+		//the photo exists and wasn't deleted.
+		result = photosRatedResult[i];
+		waiting++;
+		db.photoModel.findById(photosRatedID[i],function(err,doc){
+			if(err){
+				console.log('ERROR FINDING PHOTO WITH ID' + err);
+			}else{
+				waiting--;
+				if(doc){
+					isRealDoc = true;
+					console.log(isRealDoc);
+					//console.log(path.basename(doc.photoLink));
+					photoLinks.push(path.basename(doc.photoLink));
+					
+				}
+				complete();
+
+			}
+		});
+
+	
+		};
+
+	};
+	function complete(){
+		if(isRealDoc){
+			console.log(result);
+			photoResult.push(result);
+		}
+		if(waiting==0)
+		{
+			if(photoLinks.length < 1){
+				photoLinks = ['noUpload.jpg'];
+			}
+			res.render('photosRated',{
+				_USERNAME : username,
+				_PHOTOSRATED: photoLinks,
+				_PHOTOSRATEDRESULT: photoResult
+			});
+		}
+	};
+
+
+
+
+
+
+};
 exports.updatePhoto = function(req,res){
 	var photoName = req.query.name;
 	var rating = req.query.rating;
@@ -143,24 +208,31 @@ exports.updatePhoto = function(req,res){
 			//if a photo to be updated is return we go ahead and update else we just go back to profile
 			if(doc){
 				if(rating=='like'){
-					console.log('LIKE');
 					doc.numberOfRate = doc.numberOfRate + 1;
 					doc.currentRating = doc.currentRating +1;
 					doc.userRated.push(req.user.username);
+					req.user.photosRated.push(doc.id);
+					req.user.photosRatedResult.push('like');
+					req.user.save(function(err){
 					doc.save(function(err){
 						res.redirect('/profile');
 					});
-					console.log(doc);
+					});
 					
 				}else{
 					console.log('DISLIKE');
 					doc.numberOfRate = doc.numberOfRate + 1;
 					doc.currentRating = doc.currentRating -1;
 					doc.userRated.push(req.user.username);
+					req.user.photosRated.push(doc.id);
+					req.user.photosRatedResult.push('dislike');
+					req.user.save(function(err){
+
+
 					doc.save(function(err){
 						res.redirect('/profile');
 					});
-					console.log(doc);
+					});
 				}
 				
 

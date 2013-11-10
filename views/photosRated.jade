@@ -1,7 +1,7 @@
 !!! 5
 html
   head
-    title= _USERNAME+' Photos'
+    title= _USERNAME+' Photos Rated'
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css')
     script(src='http://code.jquery.com/jquery-1.8.3.min.js')
@@ -23,11 +23,13 @@ html
       //
          /header 
       div(data-role='content', style= 'text-align :center')
-        for photo, i in _PHOTOS
+        for photo, i in _PHOTOSRATED
           img(src='/photos/#{photo}' , width='auto' , height='270px')
           div()
-            a(href='/deletePhoto?name=#{photo}' , rel="external" , data-role='button' , data-icon='delete' , data-mini="true", data-inline="true",style='max-width:100px;') Delete
-            a(href='#' , rel="external" , data-role='button' , data-icon='edit' , data-mini="true", data-inline="true",style='max-width:100px;', data-theme='e') Edit
+        for result, i in _PHOTOSRATEDRESULT
+          p= 'You '+result+'d this photo.'
+            //a(href='/deletePhoto?name=#{photo}' , rel="external" , data-role='button' , data-icon='delete' , data-mini="true", data-inline="true",style='max-width:100px;') Delete
+            //a(href='#' , rel="external" , data-role='button' , data-icon='edit' , data-mini="true", data-inline="true",style='max-width:100px;', data-theme='e') Edit
 
             
       //
