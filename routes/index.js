@@ -22,6 +22,7 @@ exports.myphotos = function(req, res){
 	var photoIDs = req.user.photos.toObject();
 	var photoLinks = new Array();
 	var photoScores = new Array();
+	var photoDocs = new Array();
 	var waiting = 0;
 
 	//Loop through photoIDs for the user and adds them to the above array
@@ -41,6 +42,8 @@ exports.myphotos = function(req, res){
 					//console.log(path.basename(doc.photoLink));
 					photoLinks.push(path.basename(doc.photoLink));
 					photoScores.push(doc.currentRating);
+					photoDocs.push(doc);
+					console.log(doc);
 				}
 				complete();
 
@@ -56,12 +59,14 @@ exports.myphotos = function(req, res){
 	function complete(){
 		if(waiting==0)
 		{
-			if(photoLinks.length < 1){
-				photoLinks = ['noUpload.jpg'];
+			if(photoDocs.length < 1){
+				var photo = new db.photoModel({photoLink:'/photos/noUpload.jpg', photoName:'none' , userUpload:'none',currentRating:0});
+				photoDocs.push(photo);
 			}
 			res.render('myphotos',{
 			_USERNAME : req.user.username,
-			_PHOTOS: photoLinks
+			_PHOTOS: photoLinks,
+			_PHOTODOCS: photoDocs
 			});
 		}
 		};
@@ -86,22 +91,25 @@ db.photoModel.findOne({ userUpload: { $nin:[user]} , userRated:{ $nin:[user]}},f
 
 	}else{
 		if(doc){
-			var photoName = path.basename(doc.photoLink);
-			var photoRating = doc.currentRating;
-			complete(photoName, photoRating);
+			var photo = doc;
+			//var photoName = path.basename(doc.photoLink);
+			//var photoRating = doc.currentRating;
+			complete(photo);
 
 		}else{
-			complete('noUpload.jpg',0);
+			var photo = new db.photoModel({photoLink:'/photos/noUpload.jpg', photoName:'none' , userUpload:'none',currentRating:0});
+			complete(photo);
 		}
 	}
 
 });
-function complete(photoName, photoRating){
+function complete(photo){
 
 	res.render('profile', { 
 		_USERNAME : req.user.username, 
-		_PHOTO: photoName,
-		_PHOTORATING: photoRating});
+		_PHOTO: photo,
+
+	});
 
 }
 
@@ -136,6 +144,7 @@ exports.photosRated = function(req,res){
 
 	var photoLinks = new Array();
 	var photoResult = new Array();
+	var photoDocs = new Array();
 	var result;
 
 	var waiting = 0;
@@ -149,18 +158,22 @@ exports.photosRated = function(req,res){
 
 		//get reuslt of that photo and then only push it in the complete function if 
 		//the photo exists and wasn't deleted.
-		result = photosRatedResult[i];
+	
 		waiting++;
 		db.photoModel.findById(photosRatedID[i],function(err,doc){
 			if(err){
 				console.log('ERROR FINDING PHOTO WITH ID' + err);
 			}else{
+				//Use waiting as a reference to where we are in the for loop
 				waiting--;
+				var result = photosRatedResult[waiting]
+				
 				if(doc){
-					isRealDoc = true;
-					console.log(isRealDoc);
-					//console.log(path.basename(doc.photoLink));
-					photoLinks.push(path.basename(doc.photoLink));
+					//If the doc exists we create a new field called result so we can display if the user liked or disliked
+					doc.result = result;
+					doc.save();
+					photoDocs.push(doc);
+					
 					
 				}
 				complete();
@@ -173,19 +186,15 @@ exports.photosRated = function(req,res){
 
 	};
 	function complete(){
-		if(isRealDoc){
-			console.log(result);
-			photoResult.push(result);
-		}
 		if(waiting==0)
 		{
-			if(photoLinks.length < 1){
-				photoLinks = ['noUpload.jpg'];
+			if(photoDocs.length < 1){
+				var photo = new db.photoModel({photoLink:'/photos/noUpload.jpg', photoName:'none' , userUpload:'none',currentRating:0});
+				photoDocs.push(photo);
 			}
 			res.render('photosRated',{
 				_USERNAME : username,
-				_PHOTOSRATED: photoLinks,
-				_PHOTOSRATEDRESULT: photoResult
+				_PHOTODOCS: photoDocs
 			});
 		}
 	};
@@ -198,7 +207,7 @@ exports.photosRated = function(req,res){
 };
 exports.updatePhoto = function(req,res){
 	var photoName = req.query.name;
-	var rating = req.query.rating;
+	var rating = req.query.rating.trim();
 	if(rating && photoName){
 		var photoToUpdate = db.photoModel.findOne({'photoName': photoName},function(err,doc){
 		if(err){
@@ -214,9 +223,9 @@ exports.updatePhoto = function(req,res){
 					req.user.photosRated.push(doc.id);
 					req.user.photosRatedResult.push('like');
 					req.user.save(function(err){
-					doc.save(function(err){
-						res.redirect('/profile');
-					});
+						doc.save(function(err){
+							res.redirect('/profile');
+						});
 					});
 					
 				}else{
@@ -227,11 +236,9 @@ exports.updatePhoto = function(req,res){
 					req.user.photosRated.push(doc.id);
 					req.user.photosRatedResult.push('dislike');
 					req.user.save(function(err){
-
-
-					doc.save(function(err){
-						res.redirect('/profile');
-					});
+						doc.save(function(err){
+							res.redirect('/profile');
+						});
 					});
 				}
 				
@@ -312,15 +319,50 @@ exports.uploadPhoto = function(req,res){
 		  	var photoID = photo.id;
 		  	req.user.photos.push(photoID);
 		  	req.user.save();
-		  	res.redirect('/profile');
+		  	res.redirect('/myphotos');
 			
 		    
 		  
 		});
 	}else{
-		res.redirect('/profile');
+		res.redirect('/myphotos');
 	}
 	
+};
+exports.photoFocus = function(req,res){
+	var photoName = req.query.name;
+	if(photoName==null || photoName==""){
+		redirect(req.path);
+	}else{
+		var photoToDelete = db.photoModel.findOne({'photoName': photoName},function(err,doc){
+		if(err){
+			console.log(err);
+			res.redirect('/myphotos');
+		}else{
+			if(doc){
+				console.log('DOC EXISTS');
+				res.render('photoFocus',{
+					_PHOTODOC: doc
+				});
+
+				
+				
+			}else{
+				console.log('DOC DOESNt EXISTS');
+				var photo = new db.photoModel({photoLink:'photos/noUpload.jpg', photoName:'none' , userUpload:'none',currentRating:0,numberOfRate:0});
+				console.log(photo);
+
+				res.render('photoFocus',{
+					_PHOTODOC: photo
+					
+				});
+			}
+		};
+	});
+
+
+	}
+
 };
 
 exports.signup = function(req,res){

@@ -71,6 +71,7 @@ app.get('/myphotos',pass.ensureAuthenticated, routes.myphotos);
 app.get('/deletePhoto/:name?', pass.ensureAuthenticated, routes.deletePhoto);
 app.get('/updatePhoto/:name?/:rating?', pass.ensureAuthenticated, routes.updatePhoto);
 app.get('/photosRated',pass.ensureAuthenticated, routes.photosRated);
+app.get('/photoFocus/:name?',pass.ensureAuthenticated,routes.photoFocus);
 
 
 //Page routes POST

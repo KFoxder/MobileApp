@@ -29,12 +29,13 @@ html
       div(data-role='content' , style= 'text-align :center')
         
         div(id='currentImage')
-          img(src='/photos/#{_PHOTO}' , width='auto' , height='250px')
+          a(href="/photoFocus?name=#{_PHOTO.photoName}", data-rel='dialog')
+            img(src='#{_PHOTO.photoLink}' , width='auto' , height='250px')
           div(id='ratingButtons')
-            a#noLikeButton(href='/updatePhoto?name=#{_PHOTO}&rating=dislike' , data-role="button" , data-inline="true" , data-theme="a" , rel="external") disLike
-            a#LikeButton(href='/updatePhoto?name=#{_PHOTO}&rating=like' , data-role="button" , data-inline="true" , data-theme="b" , rel="external") Like
+            a#noLikeButton(href='/updatePhoto?name=#{_PHOTO.photoName}&rating=dislike' , data-role="button" , data-inline="true" , data-theme="a" , rel="external") disLike
+            a#LikeButton(href='/updatePhoto?name=#{_PHOTO.photoName}&rating=like' , data-role="button" , data-inline="true" , data-theme="b" , rel="external") Like
           div(id='currentImageRating')
-            p= 'Rating = '+ _PHOTORATING
+            p= 'Rating = '+ _PHOTO.currentRating
       //
          /content 
       div(data-role='footer', data-id='foo1', data-position='fixed')

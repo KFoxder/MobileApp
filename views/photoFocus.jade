@@ -1,0 +1,31 @@
+!!! 5
+html
+  head
+    title= _USERNAME+' Photos'
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css')
+    script(src='http://code.jquery.com/jquery-1.8.3.min.js')
+    script(src='http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.js')
+    link(rel='stylesheet', href='./css/input.css')
+    script(src='./js/sifiles.js')
+    script(type='text/javascript').
+      SI.Files.stylizeAll();
+      
+
+  body
+    div(data-theme='b', data-role='dialog')
+      div(data-role='header')
+        h1() Photo
+      div(data-role='content', style= 'text-align :center')
+        img(src='#{_PHOTODOC.photoLink}' , width='auto' , height='270px')
+        div.rating= 'Rating = '+_PHOTODOC.currentRating
+        div()
+          p= 'Uploaded by '+_PHOTODOC.userUploaded
+          p= _PHOTODOC.numberOfRate+' have rated this photo'
+
+        //
+           /navbar 
+      //
+         /footer 
+    //
+       /page 
