@@ -13,21 +13,28 @@ html
       
 
   body
-    div(data-theme='b', data-role='page')
+    div(data-theme='b', data-role='page', data-title='myphotos', id='myphotos')
       div(data-theme='b', data-role='header')
         a.ui-btn-left(href='/profile', data-transition='slide', data-direction='reverse' , data-icon='arrow-l', data-role='button', data-iconpos='notext', data-theme='b')  
-        h1 My Photos
+        div(data-role='navbar')
+          ul
+            li
+              a(href='#') My Photos
+            li
+              a(href='/photosRated') Photos Rated
         form.ui-btn-right(action='/uploadPhoto' , id='fileUploadForm' , method='post' , enctype="multipart/form-data")
           label.cabinet()
             input.file(type='file' , accept='image/*' , capture='camera', id='fileUploadInput' , onchange='this.form.submit()' , name='photo')
       //
          /header 
       div(data-role='content', style= 'text-align :center')
-        for photo, i in _PHOTOS
-          img(src='/photos/#{photo}' , width='auto' , height='270px')
+        for photo in _PHOTODOCS
           div()
-            a(href='/deletePhoto?name=#{photo}' , rel="external" , data-role='button' , data-icon='delete' , data-mini="true", data-inline="true",style='max-width:100px;') Delete
-            a(href='#' , rel="external" , data-role='button' , data-icon='edit' , data-mini="true", data-inline="true",style='max-width:100px;', data-theme='e') Edit
+            img(src='#{photo.photoLink}' , width='auto' , height='270px', style='padding:1px;border: 1px solid rgba(100,100,100,0.6); background-color:white;')
+            div.rating= 'Rating = '+photo.currentRating
+            div()
+              a(href='/deletePhoto?name=#{photo.photoName}' , rel="external" , data-role='button' , data-icon='delete' , data-mini="true", data-inline="true",style='max-width:100px;') Delete
+              a(href='#' , rel="external" , data-role='button' , data-icon='edit' , data-mini="true", data-inline="true",style='max-width:100px;', data-theme='e') Edit
 
             
       //

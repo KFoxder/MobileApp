@@ -12,24 +12,25 @@ html
       SI.Files.stylizeAll();
       
 
-  body
-    div(data-theme='b', data-role='page')
+ body
+    div(data-theme='b', data-role='page', data-title='myphotos', id='myphotos')
       div(data-theme='b', data-role='header')
         a.ui-btn-left(href='/profile', data-transition='slide', data-direction='reverse' , data-icon='arrow-l', data-role='button', data-iconpos='notext', data-theme='b')  
-        h1 My Photos
+        div(data-role='navbar')
+          ul
+            li
+              a(href='/myphotos') My Photos
+            li
+              a(href='#') Photos Rated
         form.ui-btn-right(action='/uploadPhoto' , id='fileUploadForm' , method='post' , enctype="multipart/form-data")
           label.cabinet()
             input.file(type='file' , accept='image/*' , capture='camera', id='fileUploadInput' , onchange='this.form.submit()' , name='photo')
       //
          /header 
       div(data-role='content', style= 'text-align :center')
-        for photo, i in _PHOTOSRATED
-          img(src='/photos/#{photo}' , width='auto' , height='270px')
-          div()
-        for result, i in _PHOTOSRATEDRESULT
-          p= 'You '+result+'d this photo.'
-            //a(href='/deletePhoto?name=#{photo}' , rel="external" , data-role='button' , data-icon='delete' , data-mini="true", data-inline="true",style='max-width:100px;') Delete
-            //a(href='#' , rel="external" , data-role='button' , data-icon='edit' , data-mini="true", data-inline="true",style='max-width:100px;', data-theme='e') Edit
+        for photo in _PHOTODOCS
+          img(src='#{photo.photoLink}' , width='auto' , height='270px')
+          p= 'You '+photo.result+'d this photo.'
 
             
       //
@@ -38,11 +39,11 @@ html
         div(data-role='navbar')
           ul
             li
-              a(href='#') My Photo
+              a(href='/myphotos' , data-transition='slide' , data-direction='reverse') My Photo
             li
-              a(href='/profile' , data-transition='slide' ) My Feed
+              a(href='/profile' , data-transition='slide' , data-direction='reverse' ) My Feed
             li
-              a(href='/account') My Account
+              a(href='/account' , data-transition='slide' , data-direction='reverse') My Account
         //
            /navbar 
       //
