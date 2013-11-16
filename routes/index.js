@@ -20,8 +20,6 @@ exports.myphotos = function(req, res){
 
 	//Gets an Array of Photo ObjectIds for the user
 	var photoIDs = req.user.photos.toObject();
-	var photoLinks = new Array();
-	var photoScores = new Array();
 	var photoDocs = new Array();
 	var waiting = 0;
 
@@ -40,10 +38,7 @@ exports.myphotos = function(req, res){
 				waiting--;
 				if(doc){
 					//console.log(path.basename(doc.photoLink));
-					photoLinks.push(path.basename(doc.photoLink));
-					photoScores.push(doc.currentRating);
 					photoDocs.push(doc);
-					console.log(doc);
 				}
 				complete();
 
@@ -65,7 +60,6 @@ exports.myphotos = function(req, res){
 			}
 			res.render('myphotos',{
 			_USERNAME : req.user.username,
-			_PHOTOS: photoLinks,
 			_PHOTODOCS: photoDocs
 			});
 		}
@@ -267,9 +261,17 @@ exports.deletePhoto = function(req,res){
 		}else{
 			//if a photo to be deleted is return we go ahead and delete else we just go back to myPhotos
 			if(doc){
-				var photoToDeleteID = doc.id;
-				//Remove Photo from photoCollections
-				doc.remove(complete(photoName,photoToDeleteID));
+				//Make sure the user deleting the photo actually uploaded it
+				if(doc.userUpload.trim().toUpperCase()==req.user.username.trim().toUpperCase()){
+					var photoToDeleteID = doc.id;
+					//Remove Photo from photoCollections
+					doc.remove(complete(photoName,photoToDeleteID));
+
+				}else{
+					res.redirect('/myphotos');
+
+				}
+				
 				
 			}else{
 				res.redirect('/myphotos');
@@ -315,19 +317,110 @@ exports.uploadPhoto = function(req,res){
 		  	var newPhotoName = path.basename(req.files.photo.path);
 		  	var photoPath = '/photos/'+newPhotoName;
 		  	var photo = new db.photoModel({photoLink:photoPath, photoName:newPhotoName , userUpload:userUploaded});
-		  	photo.save();
-		  	var photoID = photo.id;
-		  	req.user.photos.push(photoID);
-		  	req.user.save();
-		  	res.redirect('/myphotos');
+
+		  	//If we succesfully get location we add to photo
+		  	if(req.body.longitude && req.body.latitude){
+		  		photo.longitude = req.body.longitude;
+		  		photo.latitude = req.body.latitude;
+		  		console.log("LAT: "+req.body.latitude+" LONG: "+req.body.longitude);
+		  	}else{
+		  		console.log("DID NOT GET LOCATION!");
+		  	}
+
+		  	photo.save(function(err){
+		  		if(err){
+		  			console.log(err);
+		  			res.redirect('/myphotos');
+		  		}else{
+		  			var photoID = photo.id;
+		  			req.user.photos.push(photoID);
+		  			req.user.save(function(err){
+		  				if(err){
+		  					console.log(err);
+		  					res.redirect('/myphotos');
+		  				}else{
+		  					res.redirect('/myphotos');
+		  				}
+		  			});
+		  		}
+		  	});
+		  	
+		  	
 			
 		    
 		  
 		});
 	}else{
+		console.log('NO FILED PASSED IN');
+		console.log(req.files);
 		res.redirect('/myphotos');
 	}
 	
+};
+exports.editPhoto = function(req,res){
+	var photoName = req.query.name;
+	if(photoName==null){
+		res.redirect('/myphotos');
+	}
+	var photoToEdit = db.photoModel.findOne({'photoName': photoName},function(err,doc){
+		if(err){
+			console.log(err);
+			res.redirect('/myphotos');
+		}else{
+			if(doc){
+				if(doc.userUpload.trim().toUpperCase()==req.user.username.trim().toUpperCase()){
+					res.render('editPhoto',{
+						_PHOTODOC:doc,
+					});
+
+				}else{
+					res.redirect('/myphotos');
+				}
+
+			}else{
+				res.redirect('/myphotos');
+			}
+		}
+
+
+	});
+
+	
+};
+exports.editPhotoSubmit = function(req,res){
+	var photoName = req.body.photoName;
+	var photoDesc = req.body.desc;
+
+	if(photoName==null || photoDesc==null){
+		res.redirect('/myphotos');
+	}else{
+		var photoToEdit = db.photoModel.findOne({'photoName': photoName},function(err,doc){
+			if(err){
+				console.log(err);
+				res.redirect('/myphotos');
+			}else{
+			if(doc){
+				if(doc.userUpload.trim().toUpperCase()==req.user.username.trim().toUpperCase()){
+					doc.photoDesc = photoDesc;
+					doc.save(function(err){
+						if(err){
+							console.log(err);	
+						}
+						res.redirect('/myphotos');
+					});
+
+				}else{
+					res.redirect('/myphotos');
+				}
+
+			}else{
+				res.redirect('/myphotos');
+			}
+		}
+		});
+	}
+
+
 };
 exports.photoFocus = function(req,res){
 	var photoName = req.query.name;
@@ -360,6 +453,100 @@ exports.photoFocus = function(req,res){
 		};
 	});
 
+
+	}
+
+};
+
+exports.trending = function(req,res){
+	if(req.query.sortBy==null){
+		var sortBy = 'MOSTLIKED';
+	}else{
+		var sortBy = req.query.sortBy.trim().toUpperCase();
+	}
+
+	var sortByOptions = new Array('MOSTLIKED','MOSTDISLIKED','MOSTACTIVE');
+	console.log(req.query.sortBy);
+	console.log(sortBy);
+
+
+	if(sortByOptions.indexOf(sortBy)<0){
+		var sortBy = 'MOSTLIKED';
+		console.log('NOT IN ARRAY');
+	}
+
+
+	var photoDocs = new Array();
+
+	if(sortBy==null){
+		res.redirect('/profile');
+
+	}else{
+		console.log(sortBy);
+		switch(sortBy)
+		{
+			case 'MOSTLIKED':
+				db.photoModel.find({}).sort({currentRating:-1}).limit(5).exec(function(err,docs){
+					if(err){
+						console.log(err);
+						res.redirect('/profile');
+					}else{
+						for(var i = 0; i<docs.length;i++){
+							photoDocs.push(docs[i]);
+						}
+						sortBy = sortBy.toLowerCase();
+						sortBy = sortBy[0].toUpperCase() + sortBy.substring(1);
+						res.render('trending',{
+							_PHOTODOCS:photoDocs,
+							_SORTBY: sortBy
+						});
+
+					}
+					
+				});
+				break;
+			case 'MOSTDISLIKED':
+				db.photoModel.find({}).sort({currentRating:1}).limit(5).exec(function(err,docs){
+					if(err){
+						console.log(err);
+						res.redirect('/profile');
+					}else{
+						for(var i = 0; i<docs.length;i++){
+							photoDocs.push(docs[i]);
+						}
+						sortBy = sortBy.toLowerCase();
+						sortBy = sortBy[0].toUpperCase() + sortBy.substring(1);
+						res.render('trending',{
+							_PHOTODOCS:photoDocs,
+							_SORTBY: sortBy
+						});
+
+					}
+					
+				});
+				
+				break;
+			case 'MOSTACTIVE':
+				db.photoModel.find({}).sort({numberOfRate:-1}).limit(5).exec(function(err,docs){
+					if(err){
+						console.log(err);
+						res.redirect('/profile');
+					}else{
+						for(var i = 0; i<docs.length;i++){
+							photoDocs.push(docs[i]);
+						}
+						sortBy = sortBy.toLowerCase();
+						sortBy = sortBy[0].toUpperCase() + sortBy.substring(1);
+						res.render('trending',{
+							_PHOTODOCS:photoDocs,
+							_SORTBY: sortBy
+						});
+
+					}
+					
+				});
+				break;
+		}
 
 	}
 

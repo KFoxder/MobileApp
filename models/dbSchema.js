@@ -80,12 +80,15 @@ var userModel = mongoose.model('User', userSchema, 'UserCollection');
 var photoSchema = new mongoose.Schema({
 
 	photoLink: {type: String, required: true},
-	photoName: {type: String, require:true},
+	photoName: {type: String, required:true},
+	photoDesc: {type:String,required:true,default:"No Description"},
 	dateAdded: {type: Date, default: Date.now, required: true},
 	numberOfRate: {type: Number, Min: 0, default: 0, required: true},
 	currentRating: {type: Number, Min: 0, default: 0, required: true},
 	userUpload: {type: String, required: true},
-	userRated: [String]
+	userRated: [String],
+	longitude:[String],
+	latitude:[String]
 });
 
 photoSchema.pre('save', function(next){

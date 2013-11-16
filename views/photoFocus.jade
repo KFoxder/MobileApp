@@ -1,7 +1,7 @@
 !!! 5
 html
   head
-    title= _USERNAME+' Photos'
+    title 
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='http://code.jquery.com/mobile/1.2.1/jquery.mobile-1.2.1.min.css')
     script(src='http://code.jquery.com/jquery-1.8.3.min.js')
@@ -13,15 +13,23 @@ html
       
 
   body
-    div(data-theme='b', data-role='dialog')
+    div(data-theme='d', data-role='dialog')
       div(data-role='header')
         h1() Photo
+        div.ui-btn-right(data-role="button",href="#", style='background-image: url("http://laurentiandentalcentre.com/images/Google-Maps-Pin.png")' )
       div(data-role='content', style= 'text-align :center')
         img(src='#{_PHOTODOC.photoLink}' , width='auto' , height='270px')
+        div(style="text-align:center;padding-right:5px")
+          a(href="#")= _PHOTODOC.userUpload
+          span(style="padding-left:20px")= _PHOTODOC.photoDesc
         div.rating= 'Rating = '+_PHOTODOC.currentRating
-        div()
-          p= 'Uploaded by '+_PHOTODOC.userUploaded
-          p= _PHOTODOC.numberOfRate+' have rated this photo'
+        if _PHOTODOC.longitude != "" && _PHOTODOC.latitude != ""
+          a(href="http://maps.google.com/maps?z=18&t=m&q=loc:#{_PHOTODOC.latitude}+#{_PHOTODOC.longitude}",target="_blank")
+            div Location
+        if _PHOTODOC.numberOfRate == 1
+          p= _PHOTODOC.numberOfRate+' person has rated this photo'
+        else
+          p= _PHOTODOC.numberOfRate+' people have rated this photo'
 
         //
            /navbar 

@@ -72,6 +72,9 @@ app.get('/deletePhoto/:name?', pass.ensureAuthenticated, routes.deletePhoto);
 app.get('/updatePhoto/:name?/:rating?', pass.ensureAuthenticated, routes.updatePhoto);
 app.get('/photosRated',pass.ensureAuthenticated, routes.photosRated);
 app.get('/photoFocus/:name?',pass.ensureAuthenticated,routes.photoFocus);
+app.get('/trending/:sortedBy?',pass.ensureAuthenticated,routes.trending);
+app.get('/editPhoto/:name?',pass.ensureAuthenticated,routes.editPhoto);
+app.get('/editPhotoSubmit',pass.ensureAuthenticated,routes.profile);
 
 
 //Page routes POST
@@ -80,6 +83,7 @@ app.post('/login',  passport.authenticate('local', { successRedirect: '/profile'
                                    					failureFlash: false }));
 app.post('/signup', routes.signup);
 app.post('/uploadPhoto', pass.ensureAuthenticated , routes.uploadPhoto);
+app.post('/editPhotoSubmit',pass.ensureAuthenticated,routes.editPhotoSubmit);
 
 
 //HTTP SERVER

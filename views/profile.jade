@@ -11,6 +11,7 @@ html
     script(src='./js/sifiles.js')
     script(type='text/javascript').
       SI.Files.stylizeAll();
+
     
 
       
@@ -22,7 +23,9 @@ html
         h1= _USERNAME+"'s Feed"
         form.ui-btn-right(action='/uploadPhoto' , id='fileUploadForm' , method='post' , enctype="multipart/form-data")
           label.cabinet()
-            input.file(type='file' , accept='image/*' , capture='camera', id='fileUploadInput' , onchange='this.form.submit()' , name='photo')
+            input.file(type='file' , accept='image/*' , capture='camera', id='fileUploadInput' , onchange="this.form.submit();" , name='photo' )
+            input#long(type="hidden", name="longitude",value= '')
+            input#lat(type="hidden", name="latitude",value= '')
                   
       //
          /header 
@@ -30,7 +33,8 @@ html
         
         div(id='currentImage')
           a(href="/photoFocus?name=#{_PHOTO.photoName}", data-rel='dialog')
-            img(src='#{_PHOTO.photoLink}' , width='auto' , height='250px')
+            img(src='#{_PHOTO.photoLink}' , width='auto' , height='250px' , style="padding:1px;border: 1px solid rgba(100,100,100,0.6); background-color:white;")
+          p= _PHOTO.photoDesc
           div(id='ratingButtons')
             a#noLikeButton(href='/updatePhoto?name=#{_PHOTO.photoName}&rating=dislike' , data-role="button" , data-inline="true" , data-theme="a" , rel="external") disLike
             a#LikeButton(href='/updatePhoto?name=#{_PHOTO.photoName}&rating=like' , data-role="button" , data-inline="true" , data-theme="b" , rel="external") Like
@@ -46,7 +50,22 @@ html
             li
               a(href='#' , rel="external") My Feed
             li
+              a(href='/trending') Trending Photos
+            li
               a(href='/account', data-transition='slide' ) My Account
+        script.
+          navigator.geolocation.getCurrentPosition(function(position){
+              var latitude  = position.coords.latitude;
+              var longitude = position.coords.longitude;
+              $("#long").attr("value",longitude.toString());
+              $("#lat").attr("value",latitude.toString());
+              console.log($("#long").attr("value"));
+              console.log($("#lat").attr("value"));
+              },function(){
+              console.log("ERROR");
+            });
+
+
         //
            /navbar 
       //

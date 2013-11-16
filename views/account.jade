@@ -18,6 +18,8 @@ html
         form.ui-btn-right(action='/uploadPhoto' , id='fileUploadForm' , method='post' , enctype="multipart/form-data")
           label.cabinet()
             input.file(type='file' , accept='image/*' , capture='camera', id='fileUploadInput' , onchange='this.form.submit()' , name='photo')
+            input#long(type="hidden", name="longitude",value= '')
+            input#lat(type="hidden", name="latitude",value= '')
       //
          /header 
       div(data-role='content')
@@ -43,10 +45,17 @@ html
             li
               a(href='/profile' , rel="external") My Feed
             li
+              a(href='/trending') Trending
+            li
               a(href='#') My Account
-        //
-           /navbar 
-      //
-         /footer 
-    //
-       /page 
+      script.
+        navigator.geolocation.getCurrentPosition(function(position){
+            var latitude  = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            $("#long").attr("value",longitude.toString());
+            $("#lat").attr("value",latitude.toString());
+            console.log($("#long").attr("value"));
+            console.log($("#lat").attr("value"));
+            },function(){
+            console.log("ERROR");
+          });
