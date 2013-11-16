@@ -14,18 +14,17 @@ html
 
   body
     div(data-theme='d', data-role='dialog')
-      div(data-role='header')
-        h1() Photo
-        div.ui-btn-right(data-role="button",href="#", style='background-image: url("http://laurentiandentalcentre.com/images/Google-Maps-Pin.png")' )
-      div(data-role='content', style= 'text-align :center')
-        img(src='#{_PHOTODOC.photoLink}' , width='auto' , height='270px')
-        div(style="text-align:center;padding-right:5px")
-          a(href="#")= _PHOTODOC.userUpload
-          span(style="padding-left:20px")= _PHOTODOC.photoDesc
-        div.rating= 'Rating = '+_PHOTODOC.currentRating
+      div(data-role='header', style="background:white; color:black; text-shadow:none")
+        h1()= _PHOTODOC.userUpload
         if _PHOTODOC.longitude != "" && _PHOTODOC.latitude != ""
-          a(href="http://maps.google.com/maps?z=18&t=m&q=loc:#{_PHOTODOC.latitude}+#{_PHOTODOC.longitude}",target="_blank")
-            div Location
+          div.ui-btn-right(data-role="button", data-iconpos='notext', href="http://maps.google.com/maps?z=12&t=m&q=loc:#{_PHOTODOC.latitude}+#{_PHOTODOC.longitude}", style='background-image: url("http://www.worksourceonline.com/images/google_maps_pin_grey.png")' )
+        else
+          div.ui-btn-right(data-role="button", data-iconpos='notext', href="#", style='background-image: url("http://www.worksourceonline.com/images/google_maps_pin_grey.png")' )
+      div(data-role='content', style= 'text-align :center')
+        img(src='#{_PHOTODOC.photoLink}' , width='auto' , height='270px', style="padding:1px;border:1px solid rgba(100,100,100,0.6);")
+        div(style="text-align:center;padding-right:5px")
+          a(href="#")= _PHOTODOC.photoDesc 
+        div.rating= 'Rating = '+_PHOTODOC.currentRating
         if _PHOTODOC.numberOfRate == 1
           p= _PHOTODOC.numberOfRate+' person has rated this photo'
         else
